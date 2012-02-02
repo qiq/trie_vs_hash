@@ -58,13 +58,13 @@ unsigned char *sequence_key2(unsigned char *s, int len, int i) {
 }
 
 void usage() {
-	fprintf(stderr, "usage: test keyLen items <sequence1|sequence2|random>\n");
+	fprintf(stderr, "usage: test keyLen items <seq1|seq2|random>\n");
 	exit(1);
 }
 
 typedef enum {
-	SEQUENCE1 = 1,
-	SEQUENCE2 = 2,
+	SEQ1 = 1,
+	SEQ2 = 2,
 	RANDOM = 3,
 } type_t;
 
@@ -79,10 +79,10 @@ int main(int argc, char **argv) {
 		usage();
 
 	type_t t;
-	if (!strcmp(type, "sequence1"))
-		t = SEQUENCE1;
-	else if (!strcmp(type, "sequence2"))
-		t = SEQUENCE2;
+	if (!strcmp(type, "seq1"))
+		t = SEQ1;
+	else if (!strcmp(type, "seq2"))
+		t = SEQ2;
 	else if (!strcmp(type, "random"))
 		t = RANDOM;
 	else
@@ -96,10 +96,10 @@ int main(int argc, char **argv) {
 	gettimeofday(&start_insert, NULL);
 	for (i = 0; i < items; i++) {
 		switch (t) {
-		case SEQUENCE1:
+		case SEQ1:
 			sequence_key1(s, keyLen, i);
 			break;
-		case SEQUENCE2:
+		case SEQ2:
 			sequence_key2(s, keyLen, i);
 			break;
 		case RANDOM:
@@ -115,10 +115,10 @@ int main(int argc, char **argv) {
 	gettimeofday(&start_lookup, NULL);
 	for (i = 0; i < items; i++) {
 		switch (t) {
-		case SEQUENCE1:
+		case SEQ1:
 			sequence_key1(s, keyLen, i);
 			break;
-		case SEQUENCE2:
+		case SEQ2:
 			sequence_key2(s, keyLen, i);
 			break;
 		case RANDOM:

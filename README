@@ -1,1 +1,13 @@
 Comparison of various hash-like data structures, their time and space complexity on different data patterns.
+
+usage: ./test keyLen items <seq1|seq2|random>
+
+keyLen -- used keys length (in bytes)
+items -- number of items to insert/lookup
+seq1 -- insert numbers 1..items (we skip numbers with zero bytes), store LSB first (= least significant byte (out of 32bit number) is first)
+seq2 -- as seq1, but store MSB first (= most significant byte (out of 32bit number) is first)
+random -- generate (pseudo)random keys
+
+To build in 32bit mode:
+$ make CFLAGS="-m32"
+You may need libc6-dev-i386, ia32-libs packages and 32bit versions of libJudy, libproc

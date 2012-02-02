@@ -31,9 +31,6 @@ struct _Trie {
 
 typedef struct _Trie trie_t;
 
-void croak(char *s) {
-}
-
 /* ----------------------------------------------------------------------- */
 
 void *algo_new(int len, int items)

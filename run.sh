@@ -2,13 +2,13 @@
 
 (
 	echo -ne "type\tkey_len\titems"
-	echo -ne "\tt_insert\tt_lookup\tt_memory"
-	echo -ne "\th_insert\th_lookup\th_memory"
-	echo -ne "\ttsl_insert\ttsl_lookup\ttsl_memory"
-	echo -ne "\tths_insert\tths_lookup\tths_memory"
+	echo -ne "\tt_ins\tt_look\tt_mem"
+	echo -ne "\th_ins\th_look\th_mem"
+	echo -ne "\tsl_ins\tsl_look\tsl_mem"
+	echo -ne "\ths_ins\ths_look\ths_mem"
 	echo
 ) >trie_vs_hash.csv
-for sequence in sequence1 sequence2 random; do
+for sequence in seq1 seq2 random; do
 	#for len in 4 8 16; do
 	for len in 36; do
 		for items in 10000 50000 100000 500000 1000000 5000000 10000000; do
