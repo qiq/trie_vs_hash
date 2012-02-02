@@ -88,59 +88,55 @@ int main(int argc, char **argv) {
 	else
 		usage();
 
+	int padding = ((keyLen >> 2)+1)*4-keyLen;
+	unsigned char *data = new unsigned char[(keyLen+padding)*items];
+	memset(data, 0, (keyLen+padding)*items);
+	switch (t) {
+	case SEQ1:
+		for (int i = 0; i < items; i++)
+			sequence_key1(data+(keyLen+padding)*i, keyLen, i);
+		break;
+	case SEQ2:
+		for (int i = 0; i < items; i++)
+			sequence_key2(data+(keyLen+padding)*i, keyLen, i);
+		break;
+	case RANDOM:
+		for (int i = 0; i < items; i++)
+			random_key(data+(keyLen+padding)*i, keyLen);
+		break;
+	}
+
+	struct proc_t usage_start;
+	look_up_our_self(&usage_start);
+
 	void *algo = algo_new(keyLen, items);
-	int i;
-	unsigned char s[keyLen+1];
-	memset(s, 0, keyLen+1);
+
 	struct timeval start_insert;
 	gettimeofday(&start_insert, NULL);
-	for (i = 0; i < items; i++) {
-		switch (t) {
-		case SEQ1:
-			sequence_key1(s, keyLen, i);
-			break;
-		case SEQ2:
-			sequence_key2(s, keyLen, i);
-			break;
-		case RANDOM:
-			random_key(s, keyLen);
-			break;
-		}
-		algo_insert(algo, keyLen, s, i);
-	}
+	for (int i = 0; i < items; i++)
+		algo_insert(algo, keyLen, data+(keyLen+padding)*i, i);
 	struct timeval finish_insert;
 	gettimeofday(&finish_insert, NULL);
 
 	struct timeval start_lookup;
 	gettimeofday(&start_lookup, NULL);
-	for (i = 0; i < items; i++) {
-		switch (t) {
-		case SEQ1:
-			sequence_key1(s, keyLen, i);
-			break;
-		case SEQ2:
-			sequence_key2(s, keyLen, i);
-			break;
-		case RANDOM:
-			random_key(s, keyLen);
-			break;
-		}
-		algo_lookup(algo, keyLen, s);
-	}
+	for (int i = 0; i < items; i++)
+		algo_lookup(algo, keyLen, data+(keyLen+padding)*i);
 	struct timeval finish_lookup;
 	gettimeofday(&finish_lookup, NULL);
 
-	struct proc_t usage;
-	look_up_our_self(&usage);
+	struct proc_t usage_finish;
+	look_up_our_self(&usage_finish);
 
 	int64_t insert_time = (int64_t) (finish_insert.tv_sec - start_insert.tv_sec) * 1000000 + (finish_insert.tv_usec - start_insert.tv_usec);
 	int64_t lookup_time = (int64_t) (finish_lookup.tv_sec - start_lookup.tv_sec) * 1000000 + (finish_lookup.tv_usec - start_lookup.tv_usec);
-	printf("%lf\t%lf\t%ld\n", (double)insert_time/items, (double)lookup_time/items, usage.vsize / (1024*1024));
+	printf("%lf\t%lf\t%ld\n", (double)insert_time/items, (double)lookup_time/items, (usage_finish.vsize-usage_start.vsize) / (1024*1024));
 
 	//getc(stdin);
 
 	algo_free(algo, keyLen);
 
+	delete[] data;
 
 	return 0;
 }
